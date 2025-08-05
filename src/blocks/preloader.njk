@@ -1,0 +1,22 @@
+<div class="preloader">
+    <svg width="135" height="84" viewBox="0 0 135 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Маска для анимации заливки -->
+        <mask id="fill-mask">
+            <rect x="0" y="84" width="135" height="84" fill="white">
+                <!-- Анимация тут -->
+                <animate attributeName="y" from="84" to="0" dur="0.9s" repeatCount="indefinite" />
+                <animate attributeName="height" from="0" to="84" dur="0.9s" repeatCount="indefinite" />
+            </rect>
+        </mask>
+
+        <!-- Сам логотип (заливается через маску) -->
+        <g mask="url(#fill-mask)">
+            <path d="M48.4426 33.6L28.9885 67.2L38.7166 84H106.617L115.042 67.2H48.4426L58.1707 50.4L48.4426 33.6Z"
+                fill="white" />
+            <path
+                d="M77.323 33.6L57.8667 0H38.9125L0 67.2L9.72812 84L48.6406 16.8L68.0968 50.4H105.909L115.637 33.6H77.323Z"
+                fill="white" />
+            <path d="M77.8354 16.8L68.1036 0H135L125.272 16.8H77.8354Z" fill="white" />
+        </g>
+    </svg>
+</div>
