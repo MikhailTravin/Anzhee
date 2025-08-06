@@ -27,6 +27,14 @@ body {
       }
     }
   }
+  .catalog-open & {
+    overflow: hidden;
+    &::before {
+      content: "";
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
   .menu-open & {
     overflow: hidden;
     &::before {
