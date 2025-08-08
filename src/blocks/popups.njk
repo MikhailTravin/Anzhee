@@ -1,0 +1,246 @@
+<div id="basket" aria-hidden="true" class="popup outgoing-right">
+    <div class="popup__wrapper">
+        <div class="popup__content">
+            <div class="basket-popup">
+                <div class="basket-popup__title">
+                    Корзина
+                </div>
+                <div class="basket-popup__body">
+                    <!--
+                    Если корзина пуста
+                    <span>Ваша корзина пуста.</span>
+                    -->
+                    <div class="basket-popup__column">
+                        <div class="basket-popup__image">
+                            <img loading="lazy" src="img/products/image1.webp" alt="">
+                        </div>
+                        <div class="basket-popup__item item-basket-popup">
+                            <div class="item-basket-popup__title">Anzhee HR250-BEAM</div>
+                            <p>
+                                Луч / 250 Вт / 0-3,8° / 13 цветов / 18 гобо-шаблонов (17 + открытый) / 2 призмы / фрост
+                            </p>
+                            <div class="item-basket-popup__price">
+                                <span>Цена:</span>
+                                116 400 ₽
+                            </div>
+                            <div class="item-basket-popup__bottom">
+                                <div data-quantity class="quantity">
+                                    <button data-quantity-minus type="button"
+                                        class="quantity__button quantity__button_minus"></button>
+                                    <div class="quantity__input">
+                                        <input data-quantity-value autocomplete="off" type="text" name="form[]"
+                                            value="1">
+                                    </div>
+                                    <button data-quantity-plus type="button"
+                                        class="quantity__button quantity__button_plus"></button>
+                                </div>
+                                <button type="button" class="remove">
+                                    <svg aria-hidden="true" width="12" height="12">
+                                        <use xlink:href="img/sprite.svg#close"></use>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="basket-popup__column">
+                        <div class="basket-popup__image">
+                            <img loading="lazy" src="img/products/image1.webp" alt="">
+                        </div>
+                        <div class="basket-popup__item item-basket-popup">
+                            <div class="item-basket-popup__title">Anzhee HR250-BEAM</div>
+                            <p>
+                                Луч / 250 Вт / 0-3,8° / 13 цветов / 18 гобо-шаблонов (17 + открытый) / 2 призмы / фрост
+                            </p>
+                            <div class="item-basket-popup__price">
+                                <span>Цена:</span>
+                                116 400 ₽
+                            </div>
+                            <div class="item-basket-popup__bottom">
+                                <div data-quantity class="quantity">
+                                    <button data-quantity-minus type="button"
+                                        class="quantity__button quantity__button_minus"></button>
+                                    <div class="quantity__input">
+                                        <input data-quantity-value autocomplete="off" type="text" name="form[]"
+                                            value="1">
+                                    </div>
+                                    <button data-quantity-plus type="button"
+                                        class="quantity__button quantity__button_plus"></button>
+                                </div>
+                                <button type="button" class="remove">
+                                    <svg aria-hidden="true" width="12" height="12">
+                                        <use xlink:href="img/sprite.svg#close"></use>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="basket-popup__column">
+                        <div class="basket-popup__image">
+                            <img loading="lazy" src="img/products/image1.webp" alt="">
+                        </div>
+                        <div class="basket-popup__item item-basket-popup">
+                            <div class="item-basket-popup__title">Anzhee HR250-BEAM</div>
+                            <p>
+                                Луч / 250 Вт / 0-3,8° / 13 цветов / 18 гобо-шаблонов (17 + открытый) / 2 призмы / фрост
+                            </p>
+                            <div class="item-basket-popup__price">
+                                <span>Цена:</span>
+                                116 400 ₽
+                            </div>
+                            <div class="item-basket-popup__bottom">
+                                <div data-quantity class="quantity">
+                                    <button data-quantity-minus type="button"
+                                        class="quantity__button quantity__button_minus"></button>
+                                    <div class="quantity__input">
+                                        <input data-quantity-value autocomplete="off" type="text" name="form[]"
+                                            value="1">
+                                    </div>
+                                    <button data-quantity-plus type="button"
+                                        class="quantity__button quantity__button_plus"></button>
+                                </div>
+                                <button type="button" class="remove">
+                                    <svg aria-hidden="true" width="12" height="12">
+                                        <use xlink:href="img/sprite.svg#close"></use>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="basket-popup__bottom">
+                    <div class="basket-popup__total">
+                        <span>Итого</span>
+                        <div class="basket-popup__summ">116 400 ₽</div>
+                    </div>
+                    <a href="#" data-popup="#order" class="btn">
+                        <span>Оформить заказ</span>
+                        <span>Оформить заказ</span>
+                    </a>
+                    <!--
+                    Если корзина пуста
+                    <button type="button" data-close class="btn">
+                        <span>Продолжить покупки</span>
+                        <span>Продолжить покупки</span>
+                    </button>
+                    -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
+Выезжающие списки справо
+<div id="order" aria-hidden="true" class="popup outgoing-right order-outgoing-right">
+    <div class="popup__wrapper">
+        <div class="popup__content">
+            <form action="#" data-dev data-popup-message="#thanks" class="form">
+                <div class="form__title">
+                    Укажите свои контактные данные для оформления заказа
+                </div>
+                <div class="form__body">
+                    <div class="form__inputs">
+                        <div class="form__input">
+                            <input autocomplete="off" type="text" name="form[]" placeholder="Имя">
+                        </div>
+                        <div class="form__input">
+                            <input data-required autocomplete="off" type="text" name="form[]" placeholder="Телефон">
+                        </div>
+                        <div class="form__input">
+                            <input data-required="email" autocomplete="off" type="text" name="form[]"
+                                placeholder="Почта">
+                        </div>
+                    </div>
+                    <div class="checkbox">
+                        <input id="c_1" class="checkbox__input" type="checkbox" value="1" name="form[]">
+                        <label for="c_1" class="checkbox__label">
+                            <span class="checkbox__icon"></span>
+                            <span class="checkbox__text">
+                                Cогласен с <a href="#">политикой
+                                    конфиденциальности</a></span>
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn">
+                    <span>Отправить</span>
+                    <span>Отправить</span>
+                </button>
+                <div class="form__link">
+                    <a href="#" data-close>Вернуться к покупкам</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="thanks" aria-hidden="true" class="popup outgoing-right thanks-outgoing-right">
+    <div class="popup__wrapper">
+        <div class="popup__content">
+            <div class="form">
+                <div class="form__title">
+                    Спасибо! Мы свяжемся с вами в ближайшее время.
+                </div>
+                <div class="form__link">
+                    <a href="#" data-close>Вернуться к покупкам</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+<!--По центру-->
+<div id="order" aria-hidden="true" class="popup">
+    <div class="popup__wrapper">
+        <div class="popup__content">
+            <form action="#" data-dev data-popup-message="#thanks" class="form">
+                <div class="form__title">
+                    Укажите свои контактные данные для<br> оформления заказа
+                </div>
+                <div class="form__body">
+                    <div class="form__inputs">
+                        <div class="form__input">
+                            <input autocomplete="off" type="text" name="form[]" placeholder="Имя">
+                        </div>
+                        <div class="form__input">
+                            <input data-required autocomplete="off" type="text" name="form[]" placeholder="Телефон">
+                        </div>
+                        <div class="form__input">
+                            <input data-required="email" autocomplete="off" type="text" name="form[]"
+                                placeholder="Почта">
+                        </div>
+                    </div>
+                    <div class="checkbox">
+                        <input id="c_1" class="checkbox__input" type="checkbox" value="1" name="form[]">
+                        <label for="c_1" class="checkbox__label">
+                            <span class="checkbox__icon"></span>
+                            <span class="checkbox__text">
+                                Cогласен с <a href="#">политикой
+                                    конфиденциальности</a></span>
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn">
+                    <span>Отправить</span>
+                    <span>Отправить</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="thanks" aria-hidden="true" class="popup">
+    <div class="popup__wrapper">
+        <div class="popup__content">
+            <div class="form">
+                <div class="form__title">
+                    Спасибо! Мы свяжемся с вами в ближайшее время.
+                </div>
+                <a href="#" class="btn">
+                    <span>Написать еще раз</span>
+                    <span>Написать еще раз</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
