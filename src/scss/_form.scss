@@ -145,13 +145,13 @@
             line-height: 115%;
             border-bottom: 1px solid var(--belyy-100-elementy);
             padding: 0px 0px 15px 0px;
+            border-radius: 0px;
             transition:
                 color 0.3s,
                 border-bottom 0.3s;
             &::placeholder {
                 color: var(--belyy-400-tekst);
-                transition:
-                    color 0.3s;
+                transition: color 0.3s;
             }
             &._form-error {
                 color: #f00;
