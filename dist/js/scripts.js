@@ -714,12 +714,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const blocks = document.querySelectorAll('.block-scroll');
   let isScrolling = false;
   let scrollTimeout = null;
-  const SCROLL_DURATION = 1000;
-  const EDGE_TOLERANCE = 15;
-  let touchStartY = 0;
-  let touchMoveY = 0;
-  let currentTouchBlock = null;
+  const SCROLL_DURATION = 1000; // 1 сек
+  const EDGE_TOLERANCE = 15; // Допуск для краёв (px)
 
+  // Проверка, достигнут ли край блока
   function isScrolledToEdge(block, direction) {
     const { scrollTop, scrollHeight, clientHeight } = block;
     return direction === 'down'
@@ -727,6 +725,7 @@ document.addEventListener('DOMContentLoaded', () => {
       : scrollTop <= EDGE_TOLERANCE;
   }
 
+  // Плавный скролл к блоку с контролем скорости
   function smoothScrollToBlock(targetBlock) {
     if (!targetBlock || isScrolling) return;
 
@@ -739,6 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, SCROLL_DURATION);
   }
 
+  // Находит текущий видимый блок
   function getCurrentBlock() {
     const viewportMiddle = window.innerHeight / 2;
     for (const block of blocks) {
@@ -750,74 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return null;
   }
 
-  function handleTouchStart(e) {
-    if (isScrolling) {
-      e.preventDefault();
-      return;
-    }
-    touchStartY = e.changedTouches[0].pageY;
-    currentTouchBlock = getCurrentBlock();
-  }
-
-  function handleTouchMove(e) {
-    if (!currentTouchBlock || isScrolling) return;
-
-    touchMoveY = e.changedTouches[0].pageY;
-    const deltaY = touchStartY - touchMoveY;
-    const direction = deltaY > 0 ? 'up' : 'down';
-
-    // Если у блока есть внутренний скролл и не достигнут край - скроллим блок
-    if (currentTouchBlock.scrollHeight > currentTouchBlock.clientHeight) {
-      const isEdge = isScrolledToEdge(currentTouchBlock, direction);
-
-      if (!isEdge) {
-        // Позволяем скроллить содержимое блока
-        currentTouchBlock.scrollTop += deltaY;
-        touchStartY = touchMoveY;
-        e.preventDefault();
-        return;
-      }
-    }
-
-    // Если достигнут край или блок не скроллится - предотвращаем дефолтное поведение
-    e.preventDefault();
-  }
-
-  function handleTouchEnd(e) {
-    if (!currentTouchBlock || isScrolling) return;
-
-    const deltaY = touchStartY - e.changedTouches[0].pageY;
-
-    // Минимальное расстояние свайпа для срабатывания (чтобы не было ложных срабатываний)
-    if (Math.abs(deltaY) < 50) return;
-
-    const direction = deltaY > 0 ? 'up' : 'down';
-
-    // Проверяем, нужно ли переключать блоки или можно скроллить текущий
-    if (currentTouchBlock.scrollHeight > currentTouchBlock.clientHeight) {
-      const isEdge = isScrolledToEdge(currentTouchBlock, direction);
-
-      if (!isEdge) {
-        currentTouchBlock = null;
-        return;
-      }
-    }
-
-    const targetBlock = direction === 'down'
-      ? currentTouchBlock.nextElementSibling
-      : currentTouchBlock.previousElementSibling;
-
-    smoothScrollToBlock(targetBlock);
-    currentTouchBlock = null;
-  }
-
-  // Инициализация
-  window.addEventListener('wheel', handleWheel, { passive: false });
-  window.addEventListener('touchstart', handleTouchStart, { passive: false });
-  window.addEventListener('touchmove', handleTouchMove, { passive: false });
-  window.addEventListener('touchend', handleTouchEnd, { passive: false });
-
-  // Обработчик колеса (оставьте ваш существующий код)
+  // Обработчик скролла колесом
   function handleWheel(e) {
     if (isScrolling) {
       e.preventDefault();
@@ -829,6 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const direction = e.deltaY > 0 ? 'down' : 'up';
 
+    // Если у блока есть внутренний скролл и не достигнут край — пропускаем
     if (currentBlock.scrollHeight > currentBlock.clientHeight &&
       !isScrolledToEdge(currentBlock, direction)) {
       return;
@@ -842,7 +776,104 @@ document.addEventListener('DOMContentLoaded', () => {
     smoothScrollToBlock(targetBlock);
   }
 
-  // Кнопки (оставьте ваш существующий код)
+  // Обработчик свайпов на мобильных
+  function handleTouch(e) {
+    if (isScrolling) return;
+
+    const currentBlock = getCurrentBlock();
+    if (!currentBlock) return;
+
+    const touch = e.touches[0];
+    const startY = touch.pageY;
+    let direction = null;
+    let moved = false;
+
+    function handleTouchMove(moveE) {
+      if (isScrolling) {
+        cleanup();
+        return;
+      }
+
+      moved = true;
+      const moveY = moveE.touches[0].pageY;
+      const deltaY = moveY - startY;
+
+      // Определяем направление
+      direction = deltaY < 0 ? 'down' : 'up';
+
+      // Проверяем, можно ли скроллить внутри блока
+      const canScrollInCurrent = currentBlock.scrollHeight > currentBlock.clientHeight;
+      const atTop = currentBlock.scrollTop <= EDGE_TOLERANCE;
+      const atBottom = currentBlock.scrollTop + currentBlock.clientHeight >= currentBlock.scrollHeight - EDGE_TOLERANCE;
+
+      let shouldPreventDefault = false;
+
+      if (direction === 'down') {
+        // Если свайп вниз, но можно скроллить вниз — разрешаем нативный скролл
+        if (canScrollInCurrent && !atBottom) {
+          shouldPreventDefault = false; // разрешаем скролл
+        } else {
+          shouldPreventDefault = true; // блокируем, чтобы переключить блок
+        }
+      } else if (direction === 'up') {
+        // Если свайп вверх, но можно скроллить вверх — разрешаем
+        if (canScrollInCurrent && !atTop) {
+          shouldPreventDefault = false;
+        } else {
+          shouldPreventDefault = true;
+        }
+      }
+
+      if (shouldPreventDefault) {
+        moveE.preventDefault();
+      }
+      // Если не нужно предотвращать — браузер сам проскроллит
+    }
+
+    function handleTouchEnd() {
+      if (!moved || !direction || isScrolling) {
+        cleanup();
+        return;
+      }
+
+      const canScrollInCurrent = currentBlock.scrollHeight > currentBlock.clientHeight;
+      const atTop = currentBlock.scrollTop <= EDGE_TOLERANCE;
+      const atBottom = currentBlock.scrollTop + currentBlock.clientHeight >= currentBlock.scrollHeight - EDGE_TOLERANCE;
+
+      let shouldSwitchBlock = false;
+
+      if (direction === 'down' && atBottom) {
+        shouldSwitchBlock = true;
+      } else if (direction === 'up' && atTop) {
+        shouldSwitchBlock = true;
+      }
+
+      if (shouldSwitchBlock) {
+        e.preventDefault(); // только если переключаем
+        const targetBlock = direction === 'down'
+          ? currentBlock.nextElementSibling
+          : currentBlock.previousElementSibling;
+        smoothScrollToBlock(targetBlock);
+      }
+
+      cleanup();
+    }
+
+    function cleanup() {
+      document.removeEventListener('touchmove', handleTouchMove, { passive: false });
+      document.removeEventListener('touchend', handleTouchEnd);
+    }
+
+    // Подключаем обработчики
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+  }
+
+  // Инициализация
+  window.addEventListener('wheel', handleWheel, { passive: false });
+  window.addEventListener('touchstart', handleTouch, { passive: false });
+
+  // Кнопки для ручного скролла (если есть в разметке)
   document.querySelectorAll('[data-scroll="down"]').forEach(btn => {
     btn.addEventListener('click', () => {
       const currentBlock = getCurrentBlock();
