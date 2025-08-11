@@ -4,6 +4,8 @@ body {
   font-weight: 400;
   font-size: 16px;
   line-height: 120%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   &::before {
     content: "";
     position: fixed;
@@ -47,6 +49,15 @@ body {
   .lock & {
     overflow: hidden;
   }
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  overflow: hidden;
+  scroll-behavior: smooth;
 }
 
 input,
@@ -440,6 +451,9 @@ a {
     font-size: 50px;
     line-height: 84%;
   }
+  @media (max-width: 375px) {
+    font-size: 45px;
+  }
 }
 
 .title2 {
@@ -447,6 +461,40 @@ a {
   font-size: 70px;
   line-height: 100%;
   letter-spacing: -0.04em;
+  display: block;
+  opacity: 0;
+  transform: translateY(100%);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+  &._watcher-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  span {
+    position: relative;
+    top: -25px;
+    font-size: 45px;
+    color: var(--belyy-400-tekst);
+    @media (max-width: 1440px) {
+      font-size: 28px;
+      top: -15px;
+    }
+    @media (max-width: 1200px) {
+      top: -20px;
+    }
+    @media (max-width: 768px) {
+      font-size: 18px;
+      top: -15px;
+    }
+  }
+  @media (max-width: 1440px) {
+    font-size: 50px;
+    letter-spacing: -0.02em;
+  }
+  @media (max-width: 768px) {
+    font-size: 35px;
+  }
 }
 
 .title3 {
@@ -454,6 +502,10 @@ a {
   font-size: 30px;
   line-height: 110%;
   letter-spacing: -0.03em;
+  @media (max-width: 1440px) {
+    font-size: 25px;
+    letter-spacing: -0.02em;
+  }
 }
 
 .title4 {
@@ -470,4 +522,15 @@ p {
   @media (max-width: 1440px) {
     font-size: 20px;
   }
+}
+
+.icon-grey {
+  flex: 0 0 50px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--belyy-100-elementy);
 }

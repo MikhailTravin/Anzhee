@@ -245,7 +245,6 @@ function menuClose() {
 function uniqArray(array) {
     return [...new Set(array)];
 }
-
 class ScrollWatcher {
     constructor(props) {
         const defaultConfig = {
@@ -412,19 +411,24 @@ class ScrollWatcher {
         );
     }
 }
-
-// Инициализация после появления класса loaded у documentElement
+// Инициализация через 0.1 секунды после появления класса loaded у documentElement
 if (typeof modules_flsModules !== 'undefined') {
     const initWatcher = () => {
         if (document.documentElement.classList.contains('loaded')) {
-            modules_flsModules.watcher = new ScrollWatcher({});
+            // Добавляем задержку 100 мс (0.1 секунды)
+            setTimeout(() => {
+                modules_flsModules.watcher = new ScrollWatcher({});
+            }, 100);
         } else {
             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.attributeName === 'class' &&
                         document.documentElement.classList.contains('loaded')) {
                         observer.disconnect();
-                        modules_flsModules.watcher = new ScrollWatcher({});
+                        // Добавляем задержку 100 мс (0.1 секунды)
+                        setTimeout(() => {
+                            modules_flsModules.watcher = new ScrollWatcher({});
+                        }, 100);
                     }
                 });
             });

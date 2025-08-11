@@ -151,6 +151,30 @@ function uniqArray(array) {
 
 //========================================================================================================================================================
 
+// Добавление к шапке при скролле
+const header = document.querySelector('.header');
+let blockIntro = document.querySelector('.block-intro');
+if (header) {
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 0) {
+      header.classList.add('_header-scroll');
+    } else {
+      header.classList.remove('_header-scroll');
+    }
+  });
+}
+if (blockIntro) {
+  blockIntro.addEventListener('scroll', function () {
+    if (blockIntro.scrollTop > 0) {
+      header.classList.add('_header-scroll');
+    } else {
+      header.classList.remove('_header-scroll');
+    }
+  });
+}
+
+//========================================================================================================================================================
+
 // Добавляем класс 'loaded' после полной загрузки страницы
 window.addEventListener('load', function () {
   setTimeout(function () {
@@ -596,7 +620,7 @@ formSubmit()
 
 //Слайдеры
 if (document.querySelector(".block-intro__slider")) {
-  produceSlider = new Swiper(".block-intro__slider", {
+  introSlider = new Swiper(".block-intro__slider", {
     observer: true,
     observeParents: true,
     speed: 800,
@@ -607,22 +631,13 @@ if (document.querySelector(".block-intro__slider")) {
       el: '.block-intro__pagination-bullets',
       type: 'custom',
       renderCustom: function (swiper, current, total) {
-        // Обновляем фракцию
         document.querySelector('.swiper-pagination-current').textContent = current;
         document.querySelector('.swiper-pagination-total').textContent = total;
 
         // Генерируем буллеты (максимум 6 видимых)
         let bullets = '';
-        const maxVisible = 6;
         let start = 1;
-        let end = Math.min(total, maxVisible);
-
-        // Если слайдов больше 6, центрируем активный буллет
-        if (total > maxVisible) {
-          start = Math.max(1, current - Math.floor(maxVisible / 2));
-          start = Math.min(start, total - maxVisible + 1);
-          end = start + maxVisible - 1;
-        }
+        let end = total;
 
         // Генерируем буллеты
         for (let i = start; i <= end; i++) {
@@ -638,5 +653,180 @@ if (document.querySelector(".block-intro__slider")) {
       nextEl: ".block-intro__arrow-next"
     },
 
+    on: {
+      init: function () {
+        setParagraphHeight(this);
+      },
+      slideChange: function () {
+        setParagraphHeight(this);
+      },
+      resize: function () {
+        setParagraphHeight(this);
+      }
+    },
+
   });
 }
+function setParagraphHeight(swiper) {
+  const paragraphs = swiper.el.querySelectorAll('.block-intro__slide p');
+  const navigationsBlock = document.querySelector('.block-intro__navigations');
+  const button = document.querySelector('.block-intro__button');
+  const btn = document.querySelector('.btn');
+
+  paragraphs.forEach(p => {
+    p.style.height = '';
+    p.style.minHeight = '';
+  });
+  if (navigationsBlock) {
+    navigationsBlock.style.bottom = '';
+  }
+
+  let maxHeight = 0;
+  paragraphs.forEach(p => {
+    p.style.height = 'auto';
+    const height = p.offsetHeight;
+    if (height > maxHeight) {
+      maxHeight = height;
+    }
+  });
+
+  paragraphs.forEach(p => {
+    p.style.minHeight = `${maxHeight}px`;
+  });
+
+  const activeSlide = swiper.slides[swiper.activeIndex];
+  const activeParagraph = activeSlide.querySelector('p');
+
+  if (activeParagraph && button) {
+    const btnHeight = button.offsetHeight;
+
+    activeParagraph.style.bottom = `${btnHeight}px`;
+    button.style.marginTop = `-${btnHeight}px`;
+    if (navigationsBlock) {
+      navigationsBlock.style.bottom = `${maxHeight + btnHeight}px`;
+    }
+  }
+}
+
+//========================================================================================================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+  const blocks = document.querySelectorAll('.block-scroll');
+  let isScrolling = false;
+  let scrollTimeout = null;
+  const SCROLL_DURATION = 1000; // 1 сек
+  const EDGE_TOLERANCE = 15; // Допуск для краёв (px)
+
+  // Проверка, достигнут ли край блока
+  function isScrolledToEdge(block, direction) {
+    const { scrollTop, scrollHeight, clientHeight } = block;
+    return direction === 'down'
+      ? scrollTop + clientHeight >= scrollHeight - EDGE_TOLERANCE
+      : scrollTop <= EDGE_TOLERANCE;
+  }
+
+  // Плавный скролл к блоку с контролем скорости
+  function smoothScrollToBlock(targetBlock) {
+    if (!targetBlock || isScrolling) return;
+
+    isScrolling = true;
+    targetBlock.scrollIntoView({ behavior: 'smooth' });
+
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      isScrolling = false;
+    }, SCROLL_DURATION);
+  }
+
+  // Находит текущий видимый блок
+  function getCurrentBlock() {
+    const viewportMiddle = window.innerHeight / 2;
+    for (const block of blocks) {
+      const rect = block.getBoundingClientRect();
+      if (rect.top <= viewportMiddle && rect.bottom >= viewportMiddle) {
+        return block;
+      }
+    }
+    return null;
+  }
+
+  // Обработчик скролла колесом
+  function handleWheel(e) {
+    if (isScrolling) {
+      e.preventDefault();
+      return;
+    }
+
+    const currentBlock = getCurrentBlock();
+    if (!currentBlock) return;
+
+    const direction = e.deltaY > 0 ? 'down' : 'up';
+
+    // Если у блока есть внутренний скролл и не достигнут край — пропускаем
+    if (currentBlock.scrollHeight > currentBlock.clientHeight &&
+      !isScrolledToEdge(currentBlock, direction)) {
+      return;
+    }
+
+    e.preventDefault();
+    const targetBlock = direction === 'down'
+      ? currentBlock.nextElementSibling
+      : currentBlock.previousElementSibling;
+
+    smoothScrollToBlock(targetBlock);
+  }
+
+  // Обработчик свайпов на мобильных
+  function handleTouch(e) {
+    if (isScrolling) {
+      e.preventDefault();
+      return;
+    }
+
+    const currentBlock = getCurrentBlock();
+    if (!currentBlock) return;
+
+    const touch = e.changedTouches[0];
+    const startY = touch.pageY;
+    let direction = null;
+
+    function handleTouchMove(moveE) {
+      const moveY = moveE.changedTouches[0].pageY;
+      direction = moveY < startY ? 'down' : 'up';
+    }
+
+    function handleTouchEnd() {
+      if (direction) {
+        const targetBlock = direction === 'down'
+          ? currentBlock.nextElementSibling
+          : currentBlock.previousElementSibling;
+        smoothScrollToBlock(targetBlock);
+      }
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    }
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd, { passive: false });
+  }
+
+  // Инициализация
+  window.addEventListener('wheel', handleWheel, { passive: false });
+  window.addEventListener('touchstart', handleTouch, { passive: false });
+
+  // Кнопки для ручного скролла (если есть в разметке)
+  document.querySelectorAll('[data-scroll="down"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const currentBlock = getCurrentBlock();
+      if (currentBlock) smoothScrollToBlock(currentBlock.nextElementSibling);
+    });
+  });
+
+  document.querySelectorAll('[data-scroll="up"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const currentBlock = getCurrentBlock();
+      if (currentBlock) smoothScrollToBlock(currentBlock.previousElementSibling);
+    });
+  });
+});
+
